@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tic-Tac-Toe</title>
+  <style>
+    /* CSS styles */
+    .board {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-gap: 10px;
+      max-width: 300px;
+      margin: 20px auto;
+    }
+
+    .board button {
+      width: 80px;
+      height: 80px;
+      font-size: 36px;
+      font-weight: bold;
+    }
+
+    .game-info {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    #status {
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+
+    #restart {
+      font-size: 16px;
+      padding: 8px 16px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    @media (max-width: 480px) {
+      .board {
+        grid-gap: 5px;
+      }
+
+      .board button {
+        width: 60px;
+        height: 60px;
+        font-size: 24px;
+      }
+
+      .game-info {
+        margin-top: 10px;
+      }
+
+      #status {
+        font-size: 16px;
+      }
+
+      #restart {
+        font-size: 14px;
+        padding: 6px 12px;
+      }
+      h1 {
+        font-size: 24px;
+        margin-top: 20px;
+      } 
+    }
+  </style>
+</head>
+<body>
+  <h1>Tic-Tac-Toe</h1>
+  <div class="board">
+    <button id="cell-0"></button>
+    <button id="cell-1"></button>
+    <button id="cell-2"></button>
+    <button id="cell-3"></button>
+    <button id="cell-4"></button>
+    <button id="cell-5"></button>
+    <button id="cell-6"></button>
+    <button id="cell-7"></button>
+    <button id="cell-8"></button>
+  </div>
+  <div class="game-info">
+    <div id="status">Current player: X</div>
+    <button id="restart">Restart</button>
+  </div>
+
+  <script>
+    // JavaScript functionality
+    let currentPlayer = 'X';
+    const cells = document.querySelectorAll('.board button');
+    const statusDisplay = document.getElementById('status');
+    const restartButton = document.getElementById('restart');
+
+    function handleCellClick(event) {
+      const cell = event.target;
+      if (cell.textContent === '') {
+        cell.textContent = currentPlayer;
+        checkGameStatus();
+        switchPlayer();
+      }
+    }
+
+    function switchPlayer() {
+      currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+      statusDisplay.textContent = `Current player: ${currentPlayer}`;
+    }
+
+    function checkGameStatus() {
+      const winningConditions = [
+        [0, 1, 2], [3, 4, 5], [6, 7, 8],
+        [0, 3, 6], [1, 4, 7], [2, 5, 8],
+        [0, 4, 8], [2, 4, 6]
+      ];
+
+      for (let i = 0; i < winningConditions.length; i++) {
+        const [a, b, c] = winningConditions[i];
+        if (
+          cells[a].textContent === currentPlayer &&
+          cells[b].textContent === currentPlayer &&
+          cells[c].textContent === currentPlayer
+        ) {
+          statusDisplay.textContent = `Player ${currentPlayer} wins!`;
+          cells.forEach(cell => cell.disabled = true);
+          return;
+        }
+      }
+
+      if (Array.from(cells).every(cell => cell.textContent !== '')) {
+        statusDisplay.textContent = "It's a tie!";
+        cells.forEach(cell => cell.disabled = true);
+      }
+    }
+
+    function restartGame() {
+      currentPlayer = 'X';
+      statusDisplay.textContent = `Current player: ${currentPlayer}`;
+      cells.forEach(cell => {
+        cell.textContent = '';
+        cell.disabled = false;
+      });
+    }
+
+    cells.forEach(cell => cell.addEventListener('click', handleCellClick));
+    restartButton.addEventListener('click', restartGame);
+  </script>
+</body>
+</html>
